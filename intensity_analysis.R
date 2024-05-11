@@ -1,6 +1,6 @@
 library(neuronbridger)
 library(stringr)
-
+#is the source hwrong?
 macro1 = "/Users/emilykellogg/Documents/GitHub/intensity_analysis/macros/calculate_intensity_from_mask.ijm"
 
 #CHANGE EVERY TIME YOU DO THIS -- SPECIFY PATH TO THE CALCIUM CAL50 FOLDER
@@ -14,12 +14,15 @@ number <- str_extract(raw_data, "\\d{14}")
 new_folder_location <- "/Volumes/LaCie/VALA_TEST_IMAGES"
 
 # Construct the full path for the new folder
-new_folder_path <- file.path(new_folder_location, 'test')
+new_folder_path <- file.path(new_folder_location, number)
 
 #check if folder exists, if not, make the folder
 if(!(dir.exists(new_folder_path))){
   dir.create(new_folder_path)
 }
+
+#get the well number
+well_number <- gsub(".*Well__C_(\\d+)/.*", "\\1", raw_data)
 
 #2 --- SAMPLE AT 0.5s EACH TIME POINT, MOVE FILE TO NEW FOLDER IN HARD DRIVE
 for(i in seq(0, 2699, 30)){
@@ -29,31 +32,42 @@ for(i in seq(0, 2699, 30)){
   new_string <- sprintf("%08d", new_number)
   
   #set current file
-  currentfiles = paste(raw_data,'Cal520__C_009_r_0004_c_0005_t_', new_string, '_z_0000.tif',sep = "")
+  #NEED TO FIX THIS - has to change basedo n well
+  currentfiles = paste(raw_data,'Cal520__C_',well_number,'_r_0004_c_0005_t_', new_string, '_z_0000.tif',sep = "")
   #tell where file should go
-  newlocation = '/Volumes/LaCie/VALA_TEST_IMAGES'
-  file.copy(from=currentfiles, to=newlocation, overwrite = TRUE, recursive = FALSE, copy.mode = TRUE)
+  file.copy(from=currentfiles, to=new_folder_path, overwrite = TRUE, recursive = FALSE, copy.mode = TRUE)
 }
 
+#2.5 --- MOVE THE MASK CREATED IN CELLPOSE TO CORRECT FOLDER 
+#where the masks will be
+masks = '/Users/emilykellogg/Desktop/cellpose_masks'
 
-to_process = list.files('/Volumes/LaCie/VALA_TEST_IMAGES', full.names = TRUE)
-  
-#3 --- CALL FIJI MACROS TO DO FLUORESENCE CALCULATIONS
-for (var in to_process) {
-  
-  #puts all of the files in the correct folder
-  fiji.path = neuronbridger:::fiji()
-  runMacro(macro = macro1, 
-           macroArg = var, 
-           headless = FALSE,
-           batch = FALSE,
-           MinMem = "100m",
-           MaxMem = "25000m",
-           IncrementalGC = TRUE,
-           Threads = NULL,
-           fijiArgs = NULL,
-           javaArgs = NULL, 
-           ijArgs = NULL,
-           fijiPath = fiji.path,
-           DryRun = FALSE)
+#create strings to match mask name
+file_name = gsub("00002700", "00000000", basename(currentfiles))
+new_file <- gsub(".tif", "_cp_masks.png", file_name)
+
+#loop through files in the folder to find correct one, then move
+for(x in masks){
+  path = paste(masks,"/",x,sep="")
+  if(grepl(x, new_file)){
+    file.copy(from=x, to=new_folder_path, overwrite = TRUE, recursive = FALSE, copy.mode = TRUE)
+  }
 }
+
+#define the folder where the sampled files are
+var = new_folder_path 
+  
+#3 --- CALL FIJI MACROS TO DO FLUORESCENCE CALCULATIONS
+fiji.path = neuronbridger:::fiji()
+neuronbridger:::runFijiMacro(macro = macro1, 
+                              macroArg = var, 
+                              headless = FALSE,
+                              batch = FALSE,
+                              MinMem = "100m",
+                              MaxMem = "25000m",
+                              IncrementalGC = TRUE,
+                              Threads = NULL,
+                              fijiArgs = NULL,
+                              javaArgs = NULL, 
+                              fijiPath = fiji.path,
+                              DryRun = FALSE)
