@@ -1,6 +1,7 @@
 library(neuronbridger)
 library(stringr)
-#is the source hwrong?
+
+#0 --- CAN ONLY RUN THIS FOR EACH EXPERIMENT AND HAVE TO RUN CELLPOSE FOR EACH 0000000 FILE FIRST --> put in cellpose_masks folder
 macro1 = "/Users/emilykellogg/Documents/GitHub/intensity_analysis/macros/calculate_intensity_from_mask.ijm"
 
 #CHANGE EVERY TIME YOU DO THIS -- SPECIFY PATH TO THE CALCIUM CAL50 FOLDER
