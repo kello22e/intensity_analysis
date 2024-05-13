@@ -9,7 +9,6 @@ files = getFileList(path);
 for (i = 0; i < files.length; i++) {
 	title = files[i];
 	if(matches(title, ".*masks.*")){
-		print("got here");
 		open(files[i]);
 	}
 }
