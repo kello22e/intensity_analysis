@@ -1,8 +1,7 @@
-//path = getArgument();
+path = getArgument();
 //name = File.getName(path);
 
-//need to remeber to include / 
-path = "/Volumes/LaCie/VALA_TEST_IMAGES/20240502125054";
+//path = "/Volumes/LaCie/VALA_TEST_IMAGES/20240502125054";
 
 //get file list first, then make new folder
 files = getFileList(path);
@@ -12,16 +11,42 @@ analyzed_folder = path + File.separator + "analyzed";
 File.makeDirectory(analyzed_folder);
 
 
-//get name of masks file and open it
-for (i = 0; i < files.length; i++) {
-	title = files[i];
-	if(matches(title, ".*masks.*")){
-		//open(path + "/" + files[i]);
+//FOLDER WHERE CELLPOSE MASKS ARE 
+mask_folder = "/Users/emilykellogg/Desktop/cellpose_masks";
+masks = getFileList(mask_folder);
+
+//basename of the cellpose mask - KNOW THIS BECAUSE THE MASK IS ALWAYS CREATED FROM 1st FRAME
+basename = files[0].substring(0, files[0].lastIndexOf("."));
+
+for (i = 0; i < masks.length; i++) {
+	mask = masks[i];
+
+	//check if the basename of the file is there for the correct mask
+	if(matches(mask, ".*"+basename+".*")){
+		
+		//MOVE MASK FILE TO THE CORRECT FOLDER
+		// Define the paths
+		inputFolder = "/Users/emilykellogg/Desktop/cellpose_masks/";
+		outputFolder = path + File.separator;
+
+		// Construct the full paths
+		inputPath = inputFolder + mask;
+		outputPath = outputFolder + mask; 
+		
+		// Check if the file exists
+		if(File.exists(inputPath)){
+			// Copy the file to the correct folder
+			File.copy(inputPath, outputPath);
+			//print("File moved successfully!");
+		} else {
+			print("File not found!");
+		}
 	}
 }
 
-for (i = 0; i < files.length-1; i++) {
-	current_file = files[i+1];
+for (i = 0; i < files.length; i++) {
+	//move the mask file after calculate the number of files in the folder
+	current_file = files[i];
 	
 	//open(path + "/" + current_file);
 	

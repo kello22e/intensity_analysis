@@ -42,24 +42,24 @@ for(i in seq(0, 2699, sample_rate)){
 
 #2.5 --- MOVE THE MASK CREATED IN CELLPOSE TO CORRECT FOLDER 
 #where the masks will be
-masks = '/Users/emilykellogg/Desktop/cellpose_masks'
+#masks = '/Users/emilykellogg/Desktop/cellpose_masks'
 
 #create strings to match mask name
-last_frame = 2699-(2699%%sample_rate)
-num_str <- sprintf("%08d", last_frame)
+#last_frame = 2699-(2699%%sample_rate)
+#num_str <- sprintf("%08d", last_frame)
 
 #change the first pattern depending on how you are sampling --> for example if sampling every 30 frames, then you are sampling at 1 s and the last image is 2760
-file_name = gsub(num_str, "00000000", basename(currentfiles))
-new_file <- gsub(".tif", "_cp_masks.png", file_name)
+#file_name = gsub(num_str, "00000000", basename(currentfiles))
+#new_file <- gsub(".tif", "_cp_masks.png", file_name)
 
 #loop through files in the folder to find correct one, then move
-for(x in list.files(masks)){
-  path = paste(masks,"/",x,sep="")
-  if(grepl(x, new_file)){
-    mask_path = paste(masks,x,sep="/")
-    file.copy(from=mask_path, to=new_folder_path, overwrite = TRUE, recursive = FALSE, copy.mode = TRUE)
-  }
-}
+#for(x in list.files(masks)){
+  #path = paste(masks,"/",x,sep="")
+  #if(grepl(x, new_file)){
+    #mask_path = paste(masks,x,sep="/")
+    #file.copy(from=mask_path, to=new_folder_path, overwrite = TRUE, recursive = FALSE, copy.mode = TRUE)
+  #}
+#}
 
 
 #define the folder where the sampled files are
