@@ -6,6 +6,7 @@ path = getArgument();
 //get file list first, then make new folder
 files = getFileList(path);
 
+
 //make a folder for files you have already analyzed
 analyzed_folder = path + File.separator + "analyzed";
 File.makeDirectory(analyzed_folder);
@@ -84,7 +85,7 @@ for (i = 0; i < files.length; i++) {
 	// Check if the file exists
 	if(File.exists(inputPath)){
 		// Move the file
-		File.rename(inputPath, outputPath);
+		move = File.rename(inputPath, outputPath);
 		//print("File moved successfully!");
 	} else {
 		print("File not found!");
