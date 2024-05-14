@@ -21,19 +21,20 @@ new_folder_path <- file.path(new_folder_location, number)
 if(!(dir.exists(new_folder_path))){
   dir.create(new_folder_path)
 }
-
 #get the well number
 well_number <- gsub(".*Well__C_(\\d+)/.*", "\\1", raw_data)
 
-#2 --- SAMPLE AT 0.5s EACH TIME POINT, MOVE FILE TO NEW FOLDER IN HARD DRIVE
-for(i in seq(0, 2699, 30)){
+#2 --- SAMPLE AT 1s EACH TIME POINT, MOVE FILE TO NEW FOLDER IN HARD DRIVE
+#SET SAMPLE RATE HERE 
+sample_rate = 30 
+for(i in seq(0, 2699, sample_rate)){
   original_string <- '00000000'
   # Convert to number, add i, convert back to string
   new_number <- as.numeric(original_string) + i
   new_string <- sprintf("%08d", new_number)
   
   #set current file
-  #NEED TO FIX THIS - has to change basedo n well
+  #NEED TO FIX THIS - has to change base
   currentfiles = paste(raw_data,'Cal520__C_',well_number,'_r_0004_c_0005_t_', new_string, '_z_0000.tif',sep = "")
   #tell where file should go
   file.copy(from=currentfiles, to=new_folder_path, overwrite = TRUE, recursive = FALSE, copy.mode = TRUE)
@@ -44,16 +45,22 @@ for(i in seq(0, 2699, 30)){
 masks = '/Users/emilykellogg/Desktop/cellpose_masks'
 
 #create strings to match mask name
-file_name = gsub("00002700", "00000000", basename(currentfiles))
+last_frame = 2699-(2699%%sample_rate)
+num_str <- sprintf("%08d", last_frame)
+
+#change the first pattern depending on how you are sampling --> for example if sampling every 30 frames, then you are sampling at 1 s and the last image is 2760
+file_name = gsub(num_str, "00000000", basename(currentfiles))
 new_file <- gsub(".tif", "_cp_masks.png", file_name)
 
 #loop through files in the folder to find correct one, then move
-for(x in masks){
+for(x in list.files(masks)){
   path = paste(masks,"/",x,sep="")
   if(grepl(x, new_file)){
-    file.copy(from=x, to=new_folder_path, overwrite = TRUE, recursive = FALSE, copy.mode = TRUE)
+    mask_path = paste(masks,x,sep="/")
+    file.copy(from=mask_path, to=new_folder_path, overwrite = TRUE, recursive = FALSE, copy.mode = TRUE)
   }
 }
+
 
 #define the folder where the sampled files are
 var = new_folder_path 
