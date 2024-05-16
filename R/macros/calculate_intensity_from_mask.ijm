@@ -85,7 +85,7 @@ for (i = 0; i < files.length; i++) {
 	// Check if the file exists
 	if(File.exists(inputPath)){
 		// Move the file
-		move = File.rename(inputPath, outputPath);
+		File.rename(inputPath, outputPath);
 		//print("File moved successfully!");
 	} else {
 		print("File not found!");
