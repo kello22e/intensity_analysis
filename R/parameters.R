@@ -1,3 +1,6 @@
+#path to functions.R file
+functions = "/Users/emilykellogg/Documents/GitHub/intensity_analysis/R/startup/functions.R"
+
 #paths to fiji macros used to measure ROIs
 macro1 <- "/Users/emilykellogg/Documents/GitHub/intensity_analysis/R/macros/calculate_intensity_from_mask.ijm"
 macro2 <- "/Users/emilykellogg/Documents/GitHub/intensity_analysis/R/macros/test_macro.ijm"

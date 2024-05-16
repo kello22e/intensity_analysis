@@ -1,5 +1,6 @@
-source("/Users/emilykellogg/Documents/GitHub/intensity_analysis/R/parameters.R")
 library(stringr)
+source("/Users/emilykellogg/Documents/GitHub/intensity_analysis/R/parameters.R")
+source(functions)
 
 #NOTE --- CAN ONLY RUN THIS FOR EACH EXPERIMENT AND HAVE TO RUN CELLPOSE FOR EACH 0000000 FILE FIRST --> put in cellpose_masks folder
 
@@ -25,7 +26,10 @@ if(!(dir.exists(new_folder_path))){
 }
 
 #2 --- SAMPLE AT 1s EACH TIME POINT, MOVE FILE TO NEW FOLDER IN HARD DRIVE
-#SET SAMPLE RATE HERE 
+#SET EXP SAMPLE RATE HERE 
+aq_rate = 30
+#SET SAMPLE RATE FOR ANALYSIS - sample every 30 frames for example which means every 1 second (1hz)
+# --- Sample every 15 frames --> which means twice every second (2hz)
 sample_rate <- 30 
 #SET EXPERIMENT LENGTH
 experiment_len <- length(file_list)-1
@@ -55,3 +59,8 @@ for(file in file_list){
 command <- paste(fiji_executable, "-macro", macro3, new_folder_path)
 system(command)
 
+#harder if you dont have even numbers, might not work unless you do 1 hz or like experimental rate
+hz = aq_rate/sample_rate 
+
+#when done, calculate the DFF
+calculate_DFF(move_folder,hz)
