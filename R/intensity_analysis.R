@@ -1,10 +1,7 @@
 source("/Users/emilykellogg/Documents/GitHub/intensity_analysis/R/parameters.R")
 library(stringr)
 
-#0 --- CAN ONLY RUN THIS FOR EACH EXPERIMENT AND HAVE TO RUN CELLPOSE FOR EACH 0000000 FILE FIRST --> put in cellpose_masks folder
-macro1 = "/Users/emilykellogg/Documents/GitHub/intensity_analysis/R/macros/calculate_intensity_from_mask.ijm"
-#macro2 = "/Users/emilykellogg/Documents/GitHub/intensity_analysis/R/macros/test_macro.ijm"
-macro3 = "/Users/emilykellogg/Documents/GitHub/intensity_analysis/R/macros/create_stack_measure_all_rois.ijm"
+#NOTE --- CAN ONLY RUN THIS FOR EACH EXPERIMENT AND HAVE TO RUN CELLPOSE FOR EACH 0000000 FILE FIRST --> put in cellpose_masks folder
 
 #CHANGE EVERY TIME YOU DO THIS -- SPECIFY PATH TO THE EXPERIMENT FOLDER
 raw_data <- '/Volumes/Seagate Portable Drive/Emily/Adult_CMs_VB_LH_01_20240502125054/scan/Well__C_009/Cal520/'
@@ -17,7 +14,7 @@ file_list <- list.files(raw_data, full.names = TRUE)
 number <- str_extract(raw_data, "\\d{14}")
 
 # Specify the location for the new folder
-new_folder_location <- "/Volumes/LaCie/VALA_TEST_IMAGES"
+new_folder_location <- move_folder
 
 # Construct the full path for the new folder
 new_folder_path <- file.path(new_folder_location, number)
@@ -55,7 +52,6 @@ for(file in file_list){
 
 #3 --- CALL FIJI MACROS TO DO FLUORESCENCE CALCULATIONS
 #Sys.setenv(PATH=paste(Sys.getenv("PATH"), "/the/bin/folder/of/bedtools", sep=":"))
-fiji_executable <- "/Applications/Fiji.app/Contents/MacOS/ImageJ-macosx"
 command <- paste(fiji_executable, "-macro", macro3, new_folder_path)
 system(command)
 

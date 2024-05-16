@@ -1,6 +1,6 @@
 #paths to fiji macros used to measure ROIs
 macro1 <- "/Users/emilykellogg/Documents/GitHub/intensity_analysis/R/macros/calculate_intensity_from_mask.ijm"
-#macro2 <- "/Users/emilykellogg/Documents/GitHub/intensity_analysis/R/macros/test_macro.ijm"
+macro2 <- "/Users/emilykellogg/Documents/GitHub/intensity_analysis/R/macros/test_macro.ijm"
 macro3 <- "/Users/emilykellogg/Documents/GitHub/intensity_analysis/R/macros/create_stack_measure_all_rois.ijm"
 
 #fiji path

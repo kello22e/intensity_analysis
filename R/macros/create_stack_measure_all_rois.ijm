@@ -7,7 +7,38 @@ files = getFileList(path);
 sequence = path + File.separator;
 //run Image seqeunce import
 File.openSequence(sequence, "virtual");
-saveAs("Tiff", path + "/20240502125054.tif");
+saveAs("Tiff", path + "/20240502125054_raw.tif");
+run("Bleach Correction", "correction=[Histogram Matching]");
+close("Log");
+selectImage("DUP_20240502125054");
+saveAs("Tiff", path + "/20240502125054_corrected.tif");
+
+//MOVE CELLPOSE MASK TO CURRENT FOLDER
+//FOLDER WHERE CELLPOSE MASKS ARE 
+mask_folder = "/Users/emilykellogg/Desktop/cellpose_masks";
+masks = getFileList(mask_folder);
+
+//basename of the cellpose mask - KNOW THIS BECAUSE THE MASK IS ALWAYS CREATED FROM 1st FRAME
+basename = files[0].substring(0, files[0].lastIndexOf("."));
+
+for (i = 0; i < masks.length; i++) {
+	mask = masks[i];
+	//check if the basename of the file is there for the correct mask
+	if(matches(mask, ".*"+basename+".*")){
+		// Construct the full paths
+		inputPath = mask_folder + mask;
+		outputPath = path+ File.separator + mask; 
+		
+		// Check if the file exists
+		if(File.exists(inputPath)){
+			// Copy the file to the correct folder
+			File.copy(inputPath, outputPath);
+			//print("File moved successfully!");
+		} else {
+			print("File not found!");
+		}
+	}
+}
 
 //RUN LABEL TO ROI --> wait for use to finish entering information
 run("Labels To Rois"); 
