@@ -1,4 +1,5 @@
 path = getArgument();
+name = File.getName(path)
 
 //path = "/Volumes/LaCie/VALA_TEST_IMAGES/20240502125054";
 files = getFileList(path);
@@ -7,14 +8,15 @@ files = getFileList(path);
 sequence = path + File.separator;
 //run Image seqeunce import
 File.openSequence(sequence, "virtual");
-saveAs("Tiff", path + "/20240502125054_raw.tif");
+selectImage(name);
+saveAs("Tiff", sequence + name + ".tif");
 run("Bleach Correction", "correction=[Histogram Matching]");
 close("Log");
-selectImage("DUP_20240502125054");
-saveAs("Tiff", path + "/20240502125054_corrected.tif");
+selectImage("DUP_" + name);
+saveAs("Tiff", sequence + name + "_corrected.tif");
 
 //MOVE CELLPOSE MASK TO CURRENT FOLDER
-//FOLDER WHERE CELLPOSE MASKS ARE 
+//FOLDER WHERE CELLPOSE MASKS ARE - HAVE TO CHANGE FOR PERSONAL USE 
 mask_folder = "/Users/emilykellogg/Desktop/cellpose_masks";
 masks = getFileList(mask_folder);
 
@@ -43,7 +45,7 @@ for (i = 0; i < masks.length; i++) {
 //RUN LABEL TO ROI --> wait for use to finish entering information
 run("Labels To Rois"); 
 //enter parameters --> select new stack from as base and select cp_mask as label image
-waitForUser("Hit finish in LabelToROI plugin, then hit OK"); 
+waitForUser("Select virtual stack you just made and the cp_mask, then hit OK"); 
 
 //calculate number of ROIs
 roi_num = Array.getSequence(roiManager("Count"));
