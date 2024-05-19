@@ -3,9 +3,8 @@ source("/Users/emilykellogg/Documents/GitHub/intensity_analysis/R/parameters.R")
 source(functions)
 
 #NOTE --- CAN ONLY RUN THIS FOR EACH EXPERIMENT AND HAVE TO RUN CELLPOSE FOR EACH 0000000 FILE FIRST --> put in cellpose_masks folder
-
 #CHANGE EVERY TIME YOU DO THIS -- SPECIFY PATH TO THE EXPERIMENT FOLDER
-raw_data <- '/Volumes/Seagate Portable Drive/Emily/20240516_fluovolt_fluo8_senktide_nkb_SP/Rao_lab_voltage_fluidics_20240516114631/scan/Well__C_002/FluoVolt/'
+raw_data <- path
 
 #get all of the files in the experiment folder
 file_list <- list.files(raw_data, full.names = TRUE)
@@ -27,9 +26,7 @@ if(!(dir.exists(new_folder_path))){
 
 #2 --- SAMPLE AT 1s EACH TIME POINT, MOVE FILE TO NEW FOLDER IN HARD DRIVE
 #SET EXPERIMENT SAMPLE RATE HERE 
-#30 hz for Fluo8
-#45 hz for FluoVolt
-aq_rate = 45
+aq_rate = fluovolt
 #SET SAMPLE RATE FOR ANALYSIS - sample every 30 frames for example which means every 1 second (1hz)
 # --- Sample every 15 frames --> which means twice every second (2hz)
 sample_rate <- 9 
@@ -65,7 +62,6 @@ command <- paste(fiji_executable, "-macro", macro3, new_folder_path)
 system(command)
 
 #you might actually have to click stop because the macro will be perceived as hanging but im not 100% sure
-
 #harder if you dont have even numbers, might not work unless you do 1 hz or like experimental rate
 hz = aq_rate/sample_rate 
 
