@@ -1,35 +1,44 @@
+//GET ARGUMENTS SENT IN FROM R 
+//argument should be the folder in the LaCie drive
 path = getArgument();
 name = File.getName(path)
-
-//path = "/Volumes/LaCie/VALA_TEST_IMAGES/20240502125054";
 files = getFileList(path);
 
-//wanna save as a virtual stack first
+//path = "/Volumes/LaCie/VALA_TEST_IMAGES/20240516114631";
+//name = File.getName(path); files = getFileList(path);
+
+//gets the base name of the first file without the .tif
+base = files[0].substring(0, files[0].lastIndexOf("."));
+
+//MAKE A VIRTUAL STACK OF THE EXPERIMENT
 sequence = path + File.separator;
 //run Image seqeunce import
 File.openSequence(sequence, "virtual");
 selectImage(name);
 saveAs("Tiff", sequence + name + ".tif");
-run("Bleach Correction", "correction=[Histogram Matching]");
+//run("Bleach Correction", "correction=[Simple Ratio]");
+run("Bleach Correction", "correction=[Exponential Fit]");
+//run("Bleach Correction", "correction=[Simple Ratio]");
 close("Log");
-selectImage("DUP_" + name);
+selectImage("DUP_" + name + ".tif");
 saveAs("Tiff", sequence + name + "_corrected.tif");
 
-//MOVE CELLPOSE MASK TO CURRENT FOLDER
-//FOLDER WHERE CELLPOSE MASKS ARE - HAVE TO CHANGE FOR PERSONAL USE 
+
+//MOVE MASK FILE TO THE FOLDER ON THE LACIE DRIVE
+//FOLDER WHERE CELLPOSE MASKS ARE 
 mask_folder = "/Users/emilykellogg/Desktop/cellpose_masks";
 masks = getFileList(mask_folder);
 
-//basename of the cellpose mask - KNOW THIS BECAUSE THE MASK IS ALWAYS CREATED FROM 1st FRAME
-basename = files[0].substring(0, files[0].lastIndexOf("."));
-
+//loop through the cp_masks and get the one that matches the 00000000 file (i.e the 'base' name file)
 for (i = 0; i < masks.length; i++) {
 	mask = masks[i];
+
 	//check if the basename of the file is there for the correct mask
-	if(matches(mask, ".*"+basename+".*")){
+	if(matches(mask, ".*"+base+".*")){
+
 		// Construct the full paths
-		inputPath = mask_folder + mask;
-		outputPath = path+ File.separator + mask; 
+		inputPath = mask_folder + File.separator + mask;
+		outputPath = path + File.separator + mask; 
 		
 		// Check if the file exists
 		if(File.exists(inputPath)){
@@ -45,7 +54,7 @@ for (i = 0; i < masks.length; i++) {
 //RUN LABEL TO ROI --> wait for use to finish entering information
 run("Labels To Rois"); 
 //enter parameters --> select new stack from as base and select cp_mask as label image
-waitForUser("Select virtual stack you just made and the cp_mask, then hit OK"); 
+waitForUser("Select virtual stack you just made and the cp_mask, hit next, then hit OK to continue"); 
 
 //calculate number of ROIs
 roi_num = Array.getSequence(roiManager("Count"));
@@ -60,6 +69,10 @@ run("Set Measurements...", "mean redirect=None decimal=3");
 //save results file to the same folder
 selectWindow("Results");
 saveAs("Results", path + "/Results.csv");
+close("Results");
+
+//close stuff
+waitForUser("Hit finish in Label to ROI"); 
 
 //closes ROI manager window
 //unselects all ROIs, deletes all ROIs, closes the ROI manager
@@ -69,3 +82,5 @@ close("ROI Manager");
 
 //closes all windows
 run("Close All");
+run("Quit")
+
