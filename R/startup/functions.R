@@ -13,5 +13,5 @@ calculate_DFF <- function(path,sample_rate){
   }
   
   #Write the corrected data back to a new spreadsheet
-  write.csv(data_corrected, paste(path,"/corrected_data.csv",sep=""), row.names = FALSE)
+  write.csv(data_corrected, paste(path,"/DFF_data.csv",sep=""), row.names = FALSE)
 }
