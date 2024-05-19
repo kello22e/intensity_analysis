@@ -5,7 +5,7 @@ source(functions)
 #NOTE --- CAN ONLY RUN THIS FOR EACH EXPERIMENT AND HAVE TO RUN CELLPOSE FOR EACH 0000000 FILE FIRST --> put in cellpose_masks folder
 
 #CHANGE EVERY TIME YOU DO THIS -- SPECIFY PATH TO THE EXPERIMENT FOLDER
-raw_data <- '/Volumes/Seagate Portable Drive/Emily/Adult_CMs_VB_LH_01_20240502125054/scan/Well__C_009/Cal520/'
+raw_data <- '/Volumes/Seagate Portable Drive/Emily/20240516_fluovolt_fluo8_senktide_nkb_SP/Rao_lab_voltage_fluidics_20240516114631/scan/Well__C_002/FluoVolt/'
 
 #get all of the files in the experiment folder
 file_list <- list.files(raw_data, full.names = TRUE)
@@ -26,21 +26,26 @@ if(!(dir.exists(new_folder_path))){
 }
 
 #2 --- SAMPLE AT 1s EACH TIME POINT, MOVE FILE TO NEW FOLDER IN HARD DRIVE
-#SET EXP SAMPLE RATE HERE 
-aq_rate = 30
+#SET EXPERIMENT SAMPLE RATE HERE 
+#30 hz for Fluo8
+#45 hz for FluoVolt
+aq_rate = 45
 #SET SAMPLE RATE FOR ANALYSIS - sample every 30 frames for example which means every 1 second (1hz)
 # --- Sample every 15 frames --> which means twice every second (2hz)
-sample_rate <- 30 
+sample_rate <- 9 
 #SET EXPERIMENT LENGTH
-experiment_len <- length(file_list)-1
+# Remove files with .xml extension
+file_list <- file_list[!grepl("\\.xml$", file_list)]
+experiment_len <- length(file_list)
 i <- 0
+
 #loops through the image folder, gets the images at sampling rate and move to the LaCie drive
 for(file in file_list){
-  
+  #checking the 8 digit number in the file name --> corresponds to frame of the experiment
   #gets basename of the file
-  basename <- basename(file)
+  base <- basename(file)
   #checks what number string it is 
-  result <- regmatches(basenae, regexpr("\\d{8}", basename))
+  result <- regmatches(base, regexpr("\\d{8}", base))
   image_num = as.numeric(result)
   
   #checks if the image is the correct number
@@ -59,8 +64,11 @@ for(file in file_list){
 command <- paste(fiji_executable, "-macro", macro3, new_folder_path)
 system(command)
 
+#you might actually have to click stop because the macro will be perceived as hanging but im not 100% sure
+
 #harder if you dont have even numbers, might not work unless you do 1 hz or like experimental rate
 hz = aq_rate/sample_rate 
 
 #when done, calculate the DFF
-calculate_DFF(move_folder,hz)
+calculate_DFF(new_folder_path,hz)
+
