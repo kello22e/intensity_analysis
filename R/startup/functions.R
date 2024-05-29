@@ -44,3 +44,57 @@ write_time <- function(path){
   # If you want to replace the original file
   #write.csv(data, path, row.names = FALSE)
 }
+
+move_files <- function(file_list, new_folder_path){
+  experiment_len <- length(file_list)
+  i <- 0
+  
+  #loops through the image folder, gets the images at sampling rate and move to the LaCie drive
+  for(file in file_list){
+    #checking the 8 digit number in the file name --> corresponds to frame of the experiment
+    #gets basename of the file
+    base <- basename(file)
+    #checks what number string it is 
+    result <- regmatches(base, regexpr("\\d{8}", base))
+    image_num = as.numeric(result)
+    
+    #checks if the image is the correct number
+    if(i == image_num){
+      #ADDED CODE IF YOU WANT TO MAKE PNG FILES
+      # Extract the base name without extension
+      #file_base_name <- tools::file_path_sans_ext(basename(file))
+      
+      # Construct the new file path with .png extension
+      #new_file_path <- file.path(new_folder_path, paste0(file_base_name, ".png"))
+      
+      # Copy the file to the new location with the new extension
+      #file.copy(from = file, to = new_file_path, overwrite = TRUE, recursive = FALSE, copy.mode = TRUE)
+      file.copy(from=file, to=new_folder_path, overwrite = TRUE, recursive = FALSE, copy.mode = TRUE)
+      
+      #if you have moved an image, then you look for the next image in the sequence so add
+      if(i < experiment_len){
+        i = i + sample_rate
+      }
+    }
+  }
+}
+
+make_destination_folder <- function(raw_data, move_folder){
+  # Extract the number using regular expressions
+  number <- str_extract(raw_data, "\\d{14}")
+  well_part <- str_extract(raw_data, "Well__[A-Z]_[0-9]{3}")
+  new_folder_name <- paste0(number, "_", well_part,sep="")
+  
+  # Specify the location for the new folder
+  new_folder_location <- move_folder
+  
+  # Construct the full path for the new folder
+  new_folder_path <- file.path(new_folder_location, new_folder_name)
+  
+  #check if folder exists, if not, make the folder
+  if(!(dir.exists(new_folder_path))){
+    dir.create(new_folder_path)
+  }
+  
+  return(new_folder_path)
+}
