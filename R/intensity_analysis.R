@@ -1,5 +1,7 @@
 library(stringr)
-source("/Users/emilykellogg/Documents/GitHub/intensity_analysis/R/parameters.R")
+library(writexl)
+#change code to tell it where the parameters.R files is
+source("~/Documents/GitHub/intensity_analysis/R/parameters.R")
 source(functions)
 
 #NOTE --- CAN ONLY RUN THIS FOR EACH EXPERIMENT AND HAVE TO RUN CELLPOSE FOR EACH 0000000 FILE FIRST --> put in cellpose_masks folder
@@ -12,12 +14,14 @@ file_list <- list.files(raw_data, full.names = TRUE)
 #1 --- CREATE A FOLDER IN A THE LACIE HARD DRIVE - NAMED AFTER THE DATE NUMBER STRING
 # Extract the number using regular expressions
 number <- str_extract(raw_data, "\\d{14}")
+well_part <- str_extract(raw_data, "Well__[A-Z]_[0-9]{3}")
+new_folder_name <- paste0(number, "_", well_part,sep="")
 
 # Specify the location for the new folder
 new_folder_location <- move_folder
 
 # Construct the full path for the new folder
-new_folder_path <- file.path(new_folder_location, number)
+new_folder_path <- file.path(new_folder_location, new_folder_name)
 
 #check if folder exists, if not, make the folder
 if(!(dir.exists(new_folder_path))){
@@ -29,7 +33,7 @@ if(!(dir.exists(new_folder_path))){
 aq_rate = fluovolt
 #SET SAMPLE RATE FOR ANALYSIS - sample every 30 frames for example which means every 1 second (1hz)
 # --- Sample every 15 frames --> which means twice every second (2hz)
-sample_rate <- 9 
+sample_rate <- rate
 #SET EXPERIMENT LENGTH
 # Remove files with .xml extension
 file_list <- file_list[!grepl("\\.xml$", file_list)]
@@ -47,6 +51,15 @@ for(file in file_list){
   
   #checks if the image is the correct number
   if(i == image_num){
+    #ADDED CODE IF YOU WANT TO MAKE PNG FILES
+    # Extract the base name without extension
+    #file_base_name <- tools::file_path_sans_ext(basename(file))
+    
+    # Construct the new file path with .png extension
+    #new_file_path <- file.path(new_folder_path, paste0(file_base_name, ".png"))
+    
+    # Copy the file to the new location with the new extension
+    #file.copy(from = file, to = new_file_path, overwrite = TRUE, recursive = FALSE, copy.mode = TRUE)
     file.copy(from=file, to=new_folder_path, overwrite = TRUE, recursive = FALSE, copy.mode = TRUE)
     
     #if you have moved an image, then you look for the next image in the sequence so add
@@ -58,7 +71,7 @@ for(file in file_list){
 
 #3 --- CALL FIJI MACROS TO DO FLUORESCENCE CALCULATIONS
 #Sys.setenv(PATH=paste(Sys.getenv("PATH"), "/the/bin/folder/of/bedtools", sep=":"))
-command <- paste(fiji_executable, "-macro", macro3, new_folder_path)
+command <- paste(fiji_executable, "-macro", macro2, new_folder_path)
 system(command)
 
 #you might actually have to click stop because the macro will be perceived as hanging but im not 100% sure
@@ -68,3 +81,9 @@ hz = aq_rate/sample_rate
 #when done, calculate the DFF
 calculate_DFF(new_folder_path,hz)
 
+#List all files in the directory
+all_files <- list.files(path = new_folder_path, full.names = TRUE)
+
+# find the "DFF_data.csv"
+dff_file <- grep("DFF_data.csv", all_files, value = TRUE)
+write_time(dff_file)
