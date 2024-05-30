@@ -51,14 +51,14 @@ To run the pipeline you need to edit the `parameter.R` and the file `intensity_a
 
 ```{r rename, echo = TRUE, eval = FALSE, include = TRUE}
 #CHANGE THIS LINE
-path = "~/Rao_lab_voltage_fluidics_20240516122405/scan/Well__C_009/Cal520"
+path = "~/scan/Well__C_009/Cal520"
 
 #path to functions.R file
 functions = "~/Documents/GitHub/intensity_analysis/R/startup/functions.R"
 
-#rate at which experiment was acquired
-fluovolt = 45
-fluo8 = 30
+#CHANGE TO TRUE FOR WHATEVER EXPERIMENT YOU DID AND FALSE FOR EXPERIMENT YOU DIDNT DO
+fluovolt = FALSE
+fluo8 = TRUE
 
 #CHANGE THIS LINE
 rate = 6
@@ -71,14 +71,6 @@ fiji_executable <- "/Applications/Fiji.app/Contents/MacOS/ImageJ-macosx"
 
 #CHANGE THIS LINE
 move_folder <- "~/FOLDER_WHERE_YOU_WANT_TO_MOVE_FILES"
-```
-
-In the `intensity_analysis.R`, you need to edit this line of code below and change 'aq_rate' variable to the correct experiment - either fluo8 or fluovolt.
-
-```{r pipeline, echo = TRUE, eval = FALSE, include = TRUE}
-#CHANGE THIS LINE
-aq_rate = fluo8
-sample_rate <- rate
 ```
 
 After changing the correct parameters, you can highlight the code in `intensity_analysis.R` and run!
