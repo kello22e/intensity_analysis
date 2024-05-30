@@ -45,16 +45,18 @@ write_time <- function(path){
   #write.csv(data, path, row.names = FALSE)
 }
 
-move_files <- function(file_list, new_folder_path){
+move_files <- function(file_list, new_folder_path, sr){
   experiment_len <- length(file_list)
   i <- 0
   
-  #loops through the image folder, gets the images at sampling rate and move to the LaCie drive
+  #loops through the folder where the images are, gets the images at sampling rate and move to folder of choice for analysis
   for(file in file_list){
-    #checking the 8 digit number in the file name --> corresponds to frame of the experiment
-    #gets basename of the file
+    #checking the 8 digit number in the file name --> corresponds to frame of the experiment (for example 00000009)
+   
+    #gets basename of the file - without the path
     base <- basename(file)
-    #checks what number string it is 
+   
+    #checks what frame the current image is
     result <- regmatches(base, regexpr("\\d{8}", base))
     image_num = as.numeric(result)
     
@@ -69,11 +71,13 @@ move_files <- function(file_list, new_folder_path){
       
       # Copy the file to the new location with the new extension
       #file.copy(from = file, to = new_file_path, overwrite = TRUE, recursive = FALSE, copy.mode = TRUE)
+      
+      #move files from the current path (so the orginal folder), to folder to do analysis 
       file.copy(from=file, to=new_folder_path, overwrite = TRUE, recursive = FALSE, copy.mode = TRUE)
       
       #if you have moved an image, then you look for the next image in the sequence so add
       if(i < experiment_len){
-        i = i + sample_rate
+        i = i + sr
       }
     }
   }
