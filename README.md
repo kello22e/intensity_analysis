@@ -127,7 +127,9 @@ masks = getFileList(mask_folder);
 
 Next, the code runs the [LabelsToROI](https://labelstorois.github.io/)
 FIJI plugin. This will open the LabelsToROI gui and prompt the user to
-enter the correct images. See steps below to select the correct images
+enter the correct images.
+
+**See steps below to select the correct images**
 
 1.  Select ‘Single Image’
 
@@ -172,6 +174,7 @@ write_time(dff_file)
 ```
 
 The code is shown below and outputs 2 different .csv files
-‘DFF_data.csv’ and ‘DFF_data_modified.csv’ where the ‘DFF_data.csv’ is
-the calculated delta F/F values and the ‘DFF_data_modified.csv’ is the
-file with the calculated time in the first column.
+**‘DFF_data.csv’** and **‘DFF_data_modified.csv’** where the
+**‘DFF_data.csv’** is the calculated delta F/F values and the
+’**DFF_data_modified.csv’** is the file with the calculated time in the
+first column.
