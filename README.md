@@ -28,7 +28,7 @@ The images to run cellpose on should be composite images of the DAPI
 channel and the first frame of the experiment (should have the numbers
 0000000 in the name as it is the first frame). You can use the FIJI
 macro `save_composite_tif.ijm` to generate these images for you. You
-will need to edit the first 3 lines in this macro to run it however.
+will need to edit the first 3 lines in this macro to run it.
 
 ``` javascript
 //1 --- ENTER PATH TO YOUR DAPI CHANNEL
