@@ -1,5 +1,5 @@
 
-## Intensity Analysis for VALA Data
+# Intensity Analysis for VALA Data
 
 This is a pipeline in R and FIJI to analyze data from either calcium or
 voltage data collected on the VALA.
@@ -21,6 +21,37 @@ Then run the next command to open the GUI
 ``` c
 conda activate cellpose
 ```
+
+##### Use FIJI Macro to Generate Composite Images
+
+The images to run cellpose on should be composite images of the DAPI
+channel and the first frame of the experiment (should have the numbers
+0000000 in the name as it is the first frame). You can use the FIJI
+macro `save_composite_tif.ijm` to generate these images for you. You
+will need to edit the first 3 lines in this macro to run it however.
+
+``` javascript
+//1 --- ENTER PATH TO YOUR DAPI CHANNEL
+path1 = "";
+
+//2 --- ENTER PATH TO FLUOVOLT OR CAL520 CHANNEL - MUST BE AT 00000000 TIME POINT 
+path2 = "";
+
+//3 --- ENTER THE PATH TO THE FOLDER YOU WANT TO SAVE YOUR COMPOSITE FILE TO
+path3 = "";
+```
+
+### Back to Cellpose
+
+After saving this composite image, drag and drop it into the cellpose
+GUI. You can try to train a model on your cells by following the
+cellpose
+[instructions](https://cellpose.readthedocs.io/en/latest/gui.html). The
+built in model is also pretty good so you can also use that. To get the
+best results, first run the ‘calibrate’ for the cell diameter and then
+run ‘cyto3’. Finally, manually edit the ROIs by eye.
+
+<img src="inst/images/cellpose_instructions.png" width="348" />
 
 ## How To Run The Pipeline
 
