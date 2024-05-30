@@ -19,7 +19,7 @@ conda activate cellpose
 Then run the next command to open the GUI
 
 ``` c
-conda activate cellpose
+cellpose
 ```
 
 ##### Use FIJI Macro to Generate Composite Images
