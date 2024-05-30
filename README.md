@@ -97,7 +97,7 @@ sample_rate <- rate
 After changing the correct parameters, you can highlight the code in
 `intensity_analysis.R` and run!
 
-## Walk through of What’s Happening
+## Walkthrough of What’s Happening
 
 The pipeline takes images from the folder where your experimental images
 are and moves them to a new folder (at the sampling rate that you
