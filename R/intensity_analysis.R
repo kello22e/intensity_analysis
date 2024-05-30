@@ -21,18 +21,25 @@ file_list <- list.files(raw_data, full.names = TRUE)
 new_folder_path <- make_destination_folder(raw_data, move_folder)
 
 #2 --- SAMPLE AT RATE OF CHOICE, MOVE FILE TO NEW FOLDER IN HARD DRIVE
-#CHANGE THIS - RATE AT WHICH EXPERIMENT WAS AQUIRED 
-aq_rate = fluovolt
-#SET RATE AT WHICH YOU WANT TO SAMEPLE FOR ANALYSIS 
-# sample every 30 frames for example which means every 1 second (1hz)
-# sample every 15 frames --> which means twice every second (2hz)
+#set experiment in parameters.R --> if calcium fluo8 = TRUE, if voltage fluovolt = TRUE 
+if(fluo8){
+  aq_rate = 30
+}elseif(fluovolt){
+  aq_rate = 45
+}
+
+#SET RATE AT WHICH YOU WANT TO SAMEPLE FOR ANALYSIS - set in parameters.R
 sample_rate <- rate
+
 #SET EXPERIMENT LENGTH - EQUALS # OF FILES IN THE FOLDER
 # Remove files with .xml extension
 file_list <- file_list[!grepl("\\.xml$", file_list)]
+
+#2.5 --- CALL THE MOVE FILES FUNCT, MOVES FILES FROM EXPERIMENT FOLDER TO NEW FOLDER AT SAMPLE RATE
 move_files(file_list, new_folder_path, sample_rate)
 
 #3 --- CALL FIJI MACROS TO DO FLUORESCENCE CALCULATIONS
+#NOTE = the sys.setenv (command below) might need to be run if it throws and error the first time, should only have to run once
 #Sys.setenv(PATH=paste(Sys.getenv("PATH"), "/the/bin/folder/of/bedtools", sep=":"))
 command <- paste(fiji_executable, "-macro", macro1, new_folder_path)
 system(command)
