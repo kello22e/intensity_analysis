@@ -24,14 +24,14 @@ close("Log")
 run("Close All");
 
 //4 --- MOVE MASK FILE TO THE FOLDER ON THE LACIE DRIVE
-mask_folder =;//WHERE YOUR CELLPOSE MASK FILES ARE
+mask_folder = "~/Desktop/cellpose_masks"; //WHERE YOUR CELLPOSE MASK FILES ARE
 masks = getFileList(mask_folder);
 
 //loop through the cp_masks and get the one that matches the 00000000 file (i.e the 'base' name file)
 for (i = 0; i < masks.length; i++) {
 	mask = masks[i];
 
-	check if the basename of the file is there for the correct mask
+	//check if the basename of the file is there for the correct mask
 	if(matches(mask, ".*"+base+".*")){
 
 		// Construct the full paths
@@ -52,6 +52,7 @@ for (i = 0; i < masks.length; i++) {
 //5 --- APPLY CELLPOSE MASK TO THE EXPERIMENT VIRTUAL STACK AND CALCULATE FLUORESCENCE
 //RUN LABEL TO ROI --> wait for use to finish entering information
 run("Labels To Rois"); 
+
 //enter parameters --> select new stack from as base and select cp_mask as label image
 waitForUser("Select virtual stack you just made and the cp_mask, hit next, then hit OK to continue"); 
 
